@@ -16,7 +16,7 @@ var scaleY = d3.scaleLinear().range([400, 0]);
 
 
 //import the data from the .csv file
-d3.csv('./countryData.csv', function(dataIn){
+d3.csv('./countryData_topten.csv', function(dataIn){
 
     nestedData = d3.nest()
         .key(function(d){return d.year})
@@ -53,12 +53,12 @@ d3.csv('./countryData.csv', function(dataIn){
         */
 
     //bind the data to the d3 selection, but don't draw it yet
-    svg.selectAll('rect')
-        .data(loadData)
+    /*svg.selectAll('rect')
+        .data(loadData, function(d) {return d.countryCode;})
         .enter()
         .append('rect')
         .attr('class','bars')
-        .attr('fill', "slategray");
+        .attr('fill', "slategray");*/
 
     //call the drawPoints function below, and hand it the data2016 variable with the 2016 object array in it
     drawPoints(loadData);
@@ -74,8 +74,13 @@ function drawPoints(pointData){
     svg.selectAll('.yaxis')
         .call(d3.axisLeft(scaleY));
 
-    svg.selectAll('rect')
-        .data(pointData)
+var rects =     svg.selectAll('rect')
+        .data(pointData, function(d) {return d.countryCode;})
+
+rects.exit()
+.remove();
+
+  rects
         .attr('x',function(d){
             return scaleX(d.countryCode);
         })

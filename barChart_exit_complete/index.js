@@ -16,13 +16,13 @@ var scaleY = d3.scaleLinear().range([400, 0]);
 
 
 //import the data from the .csv file
-d3.csv('./countryData_topten.csv', function(dataIn){
+d3.csv('threea.csv', function(dataIn){
 
     nestedData = d3.nest()
         .key(function(d){return d.year})
         .entries(dataIn);
 
-    var loadData = nestedData.filter(function(d){return d.key == '1987'})[0].values;
+    var loadData = nestedData.filter(function(d){return d.key == '2016'})[0].values;
 
     // Add the x Axis
     svg.append("g")
@@ -63,8 +63,8 @@ d3.csv('./countryData_topten.csv', function(dataIn){
 //without adding more circles each time.
 function drawPoints(pointData){
 
-    scaleX.domain(pointData.map(function(d){return d.countryCode;}));
-    scaleY.domain([0, d3.max(pointData.map(function(d){return +d.totalPop}))]);
+    scaleX.domain(pointData.map(function(d){return d.team;}));
+    scaleY.domain([0, d3.max(pointData.map(function(d){return +d.threea}))]);
 
     d3.selectAll('.xaxis')
         .call(d3.axisBottom(scaleX));
@@ -74,7 +74,7 @@ function drawPoints(pointData){
 
     //select all bars in the DOM, and bind them to the new data
     var rects = svg.selectAll('.bars')
-        .data(pointData, function(d){return d.countryCode;});
+        .data(pointData, function(d){return d.team;});
 
     //look to see if there are any old bars that don't have keys in the new data list, and remove them.
     rects.exit()
@@ -85,16 +85,16 @@ function drawPoints(pointData){
         .transition()
         .duration(200)
         .attr('x',function(d){
-            return scaleX(d.countryCode);
+            return scaleX(d.team);
         })
         .attr('y',function(d){
-            return scaleY(d.totalPop);
+            return scaleY(d.threea);
         })
         .attr('width',function(d){
             return scaleX.bandwidth();
         })
         .attr('height',function(d){
-            return 400 - scaleY(d.totalPop);  //400 is the beginning domain value of the y axis, set above
+            return 400 - scaleY(d.threea);  //400 is the beginning domain value of the y axis, set above
         });
 
     //add the enter() function to make bars for any new countries in the list, and set their properties
@@ -103,17 +103,19 @@ function drawPoints(pointData){
         .append('rect')
         .attr('class','bars')
         .attr('fill', "slategray")
+        .transition()
+        .duration(1000)
         .attr('x',function(d){
-            return scaleX(d.countryCode);
+            return scaleX(d.team);
         })
         .attr('y',function(d){
-            return scaleY(d.totalPop);
+            return scaleY(d.threea);
         })
         .attr('width',function(d){
             return scaleX.bandwidth();
         })
         .attr('height',function(d){
-            return 400 - scaleY(d.totalPop);  //400 is the beginning domain value of the y axis, set above
+            return 400 - scaleY(d.threea);  //400 is the beginning domain value of the y axis, set above
         });
 
     //take out bars for any old countries that no longer exist
@@ -123,6 +125,7 @@ function drawPoints(pointData){
 
 
 }
+
 
 
 function updateData(selectedYear){
